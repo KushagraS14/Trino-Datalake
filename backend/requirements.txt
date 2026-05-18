@@ -1,0 +1,7 @@
+Flask
+Flask-Cors
+trino
+pandas
+minio
+python-dotenv
+werkzeug
