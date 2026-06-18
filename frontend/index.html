@@ -1,267 +1,118 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>TCAI Datalake & Dashboard</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TCAI Data Lake</title>
+<link rel="stylesheet" href="login.css">
 
-  <link rel="stylesheet" href="./style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 
 <body>
-  <header>
-    <div class="header-left">
-      <div class="logo-badge">
-        <img src="/logo.jpg" alt="Celeritas AI Logo" class="header-logo-img" />
-      </div>
-      <div class="header-text">
-        <div class="header-title">The Celeritas AI</div>
-        <div class="header-subtitle">Data Lake & Analytics Dashboard</div>
-      </div>
-    </div>
-    <div class="header-right">
-      <div class="status-indicator">
-        <span class="status-dot"></span>
-        Connected
-      </div>
-    </div>
-  </header>
 
-  <main>
-    <div class="hero-section">
-      <div class="hero-content">
-        <p class="hero-label">Enterprise Analytics Platform</p>
-        <h1 class="hero-title">Welcome to <em>TCAI Datalake</em></h1>
-        <p class="hero-subtitle">Powerful analytics and seamless data exploration at your fingertips.</p>
-      </div>
-    </div>
+<div class="background"></div>
 
-    <div class="features-grid">
-      <div class="feature-card">
-        <div class="step-number">1</div>
-        <div class="feature-icon"><i class="fas fa-rocket"></i></div>
-        <h3>High Performance</h3>
-        <p>Query petabytes of data in seconds using our Trino engine.</p>
-      </div>
-      <div class="feature-card">
-        <div class="step-number">2</div>
-        <div class="feature-icon"><i class="fas fa-chart-line"></i></div>
-        <h3>Advanced Analytics</h3>
-        <p>Real-time data visualization and insightful dashboards.</p>
-      </div>
-      <div class="feature-card">
-        <div class="step-number">3</div>
-        <div class="feature-icon"><i class="fas fa-shield-halved"></i></div>
-        <h3>Secure Storage</h3>
-        <p>Enterprise-grade security for your data lake assets.</p>
-      </div>
-      <div class="feature-card">
-        <div class="step-number">4</div>
-        <div class="feature-icon"><i class="fas fa-link"></i></div>
-        <h3>Easy Integration</h3>
-        <p>Seamlessly connect with various data sources and APIs.</p>
-      </div>
-    </div>
+<div class="login-wrapper">
 
-    <div class="dashboard-grid">
-      <div class="dashboard-card query-card">
-        <div class="card-header">
-          <div class="card-title">
-            <span class="card-icon"><i class="fas fa-magnifying-glass"></i></span>
-            TCAI DATALAKE
-          </div>
-          <div class="card-badge">Interactive</div>
+    <div class="brand-panel">
+
+        <div class="logo">
+            <i class="fa-solid fa-database"></i>
         </div>
 
-        <div class="upload-section">
-          <div class="upload-input-group">
-            <label for="csvFile">1. Upload New Dataset (CSV,Json,excel,parquet)</label>
-    <input type="file" id="fileInput"accept=".csv,.xlsx,.parquet,.json"/>     </div>
-          <button id="uploadBtn" class="btn-primary btn-success">
-    <i class="fas fa-cloud-arrow-up"></i> Ingest to Lake (x2)
-</button>
-        </div>
+        <h1>TCAI Data Lake</h1>
 
-        <!-- DATA SOURCE CONNECTORS -->
-        <div class="connectors-section">
-          <div class="connectors-divider">
-            <span>or connect directly</span>
-          </div>
-          <div class="connectors-row">
-            <button id="connectS3Btn" class="btn-connector btn-s3">
-              <span class="connector-glow"></span>
-              <i class="fab fa-aws"></i>
-              <span>Connect to S3</span>
-            </button>
-            <button id="connectBlobBtn" class="btn-connector btn-azure">
-              <span class="connector-glow"></span>
-              <i class="fab fa-microsoft"></i>
-              <span>Connect to Blob</span>
-            </button>
-            <button id="connectGCSBtn" class="btn-connector btn-gcp">
-              <span class="connector-glow"></span>
-              <i class="fab fa-google"></i>
-              <span>Connect to GCS</span>
-            </button>
-            <button id="connectOtherBtn" class="btn-connector btn-other">
-              <span class="connector-glow"></span>
-              <i class="fas fa-cloud"></i>
-              <span>Other Connectors</span>
-            </button>
-          </div>
-          <p class="connectors-hint">Link external cloud storage to query data directly without uploading.</p>
-        </div>
+        <p>
+            Enterprise Data Lake & Analytics Platform
+        </p>
 
-        <div id="schemaDictionary" class="schema-dictionary">
-          <h3 class="schema-title">
-            <i class="fas fa-book"></i> Schema Dictionary
-          </h3>
-          <p class="schema-description">
-            Your file has been sanitized for Trino. Use these exact <strong>SQL Names</strong> in your queries:
-          </p>
-          <div class="schema-table-wrapper">
-            <table class="schema-table">
-              <thead>
-                <tr>
-                  <th>Original CSV Name</th>
-                  <th class="sql-column">SQL Column Name</th>
-                </tr>
-              </thead>
-              <tbody id="mappingTableBody">
-              </tbody>
-            </table>
-          </div>
-        </div>
+        <ul>
+            <li><i class="fa-solid fa-check"></i> Real-time Analytics</li>
+            <li><i class="fa-solid fa-check"></i> AI Insights</li>
+            <li><i class="fa-solid fa-check"></i> MinIO Storage</li>
+            <li><i class="fa-solid fa-check"></i> Trino SQL Engine</li>
+        </ul>
 
-        <div class="input-group">
-          <label for="sqlInput">2. Enter SQL Query:</label>
-          <div class="input-wrapper sql-editor-wrapper">
-            <div class="sql-editor-gutter">
-              <span>1</span>
+    </div>
+
+    <div class="login-card">
+
+        <h2>Welcome Back</h2>
+
+        <p class="subtitle">
+            Sign in to continue
+        </p>
+
+        <form id="loginForm">
+
+            <div class="input-group">
+                <i class="fa-solid fa-envelope"></i>
+               <input
+    type="email"
+    id="email"
+    placeholder="Email Address"
+    required>
             </div>
-            <textarea id="sqlInput" spellcheck="false" placeholder="Type your SQL query here...">SHOW TABLES</textarea>
-          </div>
+
+            <div class="input-group">
+                <i class="fa-solid fa-lock"></i>
+               <input
+    type="password"
+    id="password"
+    placeholder="Password"
+    required>
+            </div>
+
+            <div class="options">
+                <label>
+                    <input type="checkbox">
+                    Remember me
+                </label>
+
+                <a href="#">
+                    Forgot Password?
+                </a>
+            </div>
+
+            <button type="submit">
+                Sign In
+            </button>
+
+        </form>
+
+        <div class="footer-text">
+            Powered by The Celeritas AI
         </div>
 
-        <div class="suggestions-row">
-          <span class="suggestions-label">Quick Actions:</span>
-          <button class="suggest-btn" data-query="SHOW TABLES"><i class="fas fa-bolt" style="font-size: 0.7rem;"></i> View All Tables</button>
-
-          <button class="suggest-btn" data-query="SELECT 
-    AVG(TRY_CAST(current_package AS DOUBLE)) AS avg_package,
-    MAX(TRY_CAST(current_package AS DOUBLE)) AS max_package,
-    MIN(TRY_CAST(current_package AS DOUBLE)) AS min_package
-FROM datalake.analytic.hr_data_cleaned;"><i class="fas fa-bolt" style="font-size: 0.7rem;"></i> Sample Analytic
-            Data</button>
-
-          <button class="suggest-btn" data-query="SELECT 
-    status, 
-    COUNT(*) AS total
-FROM datalake.analytic.hr_data_cleaned
-GROUP BY status
-ORDER BY total DESC"><i class="fas fa-bolt" style="font-size: 0.7rem;"></i> Candidate Status Count</button>
-        </div>
-
-        <button id="runQueryBtn" class="btn-primary">
-          <i class="fas fa-play" style="font-size: 0.75rem;"></i>
-          Execute Query
-        </button>
-
-        <div id="tableContainer"></div>
-
-        <div id="chartControls">
-          <div class="chart-control-group">
-            <span class="chart-label">
-              <i class="fas fa-chart-pie"></i> Visualization
-            </span>
-            <select id="chartType">
-              <option value="pie">Pie Chart</option>
-              <option value="bar">Bar Chart</option>
-              <option value="doughnut">Doughnut Chart</option>
-              <option value="line">Line Chart</option>
-            </select>
-          </div>
-
-          <div class="chart-control-group">
-            <span class="chart-sublabel">Group By:</span>
-            <select id="chartColumn"></select>
-          </div>
-        </div>
-
-        <div class="chart-wrapper">
-          <canvas id="myChart"></canvas>
-        </div>
-      </div>
     </div>
 
-    <div class="faq-section">
-      <div class="section-header">
-        <span class="section-tag"><i class="fas fa-circle-question" style="font-size: 0.75rem;"></i> Got questions?</span>
-        <h2 class="faq-heading">Frequently Asked Questions</h2>
-      </div>
-      <div class="faq-list">
-        <details>
-          <summary>
-            <span class="summary-left">
-              <span class="faq-icon"><i class="fas fa-database"></i></span>
-              What is TCAI Datalake?
-            </span>
-            <span class="faq-chevron"><i class="fas fa-chevron-down" style="font-size: 0.5rem;"></i></span>
-          </summary>
-          <p>TCAI Datalake is a centralized repository that allows you to store all your structured
-            and unstructured data at any scale, enabling you to run analytics using our high-performance Trino engine.</p>
-        </details>
-        <details>
-          <summary>
-            <span class="summary-left">
-              <span class="faq-icon"><i class="fas fa-bolt"></i></span>
-              How fast are the queries?
-            </span>
-            <span class="faq-chevron"><i class="fas fa-chevron-down" style="font-size: 0.5rem;"></i></span>
-          </summary>
-          <p>Powered by Trino's distributed SQL engine, queries are executed in parallel, often
-            returning results across petabytes of data in just seconds.</p>
-        </details>
-        <details>
-          <summary>
-            <span class="summary-left">
-              <span class="faq-icon"><i class="fas fa-lock"></i></span>
-              Is my data secure?
-            </span>
-            <span class="faq-chevron"><i class="fas fa-chevron-down" style="font-size: 0.5rem;"></i></span>
-          </summary>
-          <p>Yes, we implement enterprise-grade security protocols, including encryption at rest and
-            in transit, alongside strict access control mechanisms.</p>
-        </details>
-        <details>
-          <summary>
-            <span class="summary-left">
-              <span class="faq-icon"><i class="fas fa-chart-line"></i></span>
-              Can I visualize my results?
-            </span>
-            <span class="faq-chevron"><i class="fas fa-chevron-down" style="font-size: 0.5rem;"></i></span>
-          </summary>
-          <p>Absolutely! Once you run a query, our integrated dashboard provides multiple
-            visualization options like bar, pie, and line charts to analyze your data instantly.</p>
-        </details>
-      </div>
-    </div>
-  </main>
+</div>
 
-  <footer>
-    <div class="footer-content">
-      &copy; 2026 The Celeritas AI. All rights reserved.
-      <span class="footer-subtext">Enterprise Data Lake & Analytics Platform • Version 2.0</span>
-    </div>
-  </footer>
+<script>
+document.getElementById("loginForm")
+.addEventListener("submit", function(e){
 
-  <script type="module" src="./src/main.js"></script>
+    e.preventDefault();
+
+    const email =
+        document.getElementById("email").value;
+
+    const password =
+        document.getElementById("password").value;
+
+    if (
+        email === "admin@tcai.com" &&
+        password === "admin123"
+    ) {
+        window.location.href = "dashboard.html";
+    } else {
+        alert("Invalid Email or Password");
+    }
+});
+</script>
+<script src="login.js"></script>
 </body>
 
 </html>

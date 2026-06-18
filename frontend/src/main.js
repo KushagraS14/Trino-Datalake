@@ -1,5 +1,72 @@
 import './style.css'
+const token =
+  localStorage.getItem("token");
 
+if (token) {
+  document.getElementById(
+    "loginScreen"
+  ).style.display = "none";
+
+  document.getElementById(
+    "appContainer"
+  ).style.display = "block";
+}
+const loginBtn = document.getElementById("loginBtn");
+
+if (loginBtn) {
+  loginBtn.addEventListener("click", async () => {
+    const email =
+      document.getElementById("email").value;
+
+    const password =
+      document.getElementById("password").value;
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:5001/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            email,
+            password
+          })
+        }
+      );
+
+      const result = await response.json();
+
+      if (response.ok) {
+        localStorage.setItem(
+          "token",
+          result.token
+        );
+
+        localStorage.setItem(
+          "role",
+          result.role
+        );
+
+        document.getElementById(
+          "loginScreen"
+        ).style.display = "none";
+
+        document.getElementById(
+          "appContainer"
+        ).style.display = "block";
+      } else {
+        document.getElementById(
+          "loginError"
+        ).innerText =
+          result.error;
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  });
+}
 let currentChart = null; 
 let globalColumns = []; 
 let globalRows = [];
@@ -11,7 +78,34 @@ const chartControls = document.getElementById('chartControls');
 const chartColumnSelect = document.getElementById('chartColumn');
 const chartTypeSelect = document.getElementById('chartType');
 const tableContainer = document.getElementById('tableContainer');
+// Add this function near the top of main.js (after DOM elements)
+function isDangerousQuery(query) {
+  const upperQuery = query.toUpperCase().trim();
+  return upperQuery.startsWith('INSERT') || 
+         upperQuery.startsWith('UPDATE') || 
+         upperQuery.startsWith('DELETE') ||
+         upperQuery.startsWith('DROP') ||
+         upperQuery.startsWith('TRUNCATE');
+}
 
+// Then update the runBtn click handler to include confirmation:
+runBtn.addEventListener('click', async () => {
+  const customQuery = sqlInput.value.trim();
+  if (!customQuery) {
+    alert("Please enter a SQL query!");
+    return;
+  }
+
+  // Add confirmation for dangerous queries
+  if (isDangerousQuery(customQuery)) {
+    const confirmed = confirm(`⚠️ You are about to run a ${customQuery.split(' ')[0]} query.\n\nThis will modify your data.\n\nAre you sure you want to continue?`);
+    if (!confirmed) {
+      return;
+    }
+  }
+
+  
+});
 // --- SQL EDITOR GUTTER SYNC ---
 const gutter = document.querySelector('.sql-editor-gutter');
 if (gutter && sqlInput) {
@@ -105,7 +199,7 @@ function displaySchemaMapping(mapping) {
 }
 
 
-// --- 3. QUERY EXECUTION LOGIC ---
+/// --- 3. QUERY EXECUTION LOGIC (UPDATED for INSERT support) ---
 runBtn.addEventListener('click', async () => {
   const customQuery = sqlInput.value.trim();
   if (!customQuery) {
@@ -131,6 +225,31 @@ runBtn.addEventListener('click', async () => {
     const result = await response.json();
     if (!response.ok) throw new Error(result.error || 'Query Failed. Check your SQL syntax.');
 
+    // NEW: Check if this is an INSERT response
+    if (result.success !== undefined) {
+      // This is an INSERT/DML operation
+      const message = result.message || 'Query executed successfully';
+      const rowsAffected = result.rows_affected || 0;
+      
+      tableContainer.innerHTML = `
+        <div class="empty-state" style="color: var(--green);">
+          <div class="empty-state-icon"><i class="fas fa-check-circle"></i></div>
+          <div class="empty-state-text" style="font-size: 18px; margin-bottom: 8px;">✓ Success!</div>
+          <div class="empty-state-text">${message}</div>
+          <div class="empty-state-text" style="font-size: 14px; margin-top: 8px;">Rows affected: ${rowsAffected}</div>
+        </div>
+      `;
+      
+      // Clear any existing chart
+      if (currentChart) {
+        currentChart.destroy();
+        currentChart = null;
+      }
+      chartControls.style.display = 'none';
+      return;
+    }
+
+    // This is a SELECT response (original logic)
     globalColumns = result.columns;
     globalRows = result.rows;
     
@@ -142,7 +261,6 @@ runBtn.addEventListener('click', async () => {
     if (currentChart) currentChart.destroy();
   }
 });
-
 
 // --- 4. SETUP CHART DROPDOWNS ---
 function setupChartControls(columns) {
@@ -215,8 +333,18 @@ function renderChart() {
     }
   });
 }
+document
+  .getElementById("logoutBtn")
+  .addEventListener("click", () => {
 
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
 
+    location.reload();
+});
+document.getElementById("logoutBtn").addEventListener("click", function() {
+    window.location.href = "index.html";
+});
 // --- 6. RENDER TABLE LOGIC ---
 function renderTable(columns, rows, container) {
   if (!rows || rows.length === 0) {
